@@ -1,29 +1,29 @@
-import {type User } from '../types.d'
+import {SortBy, type User } from '../types.d'
 
 interface Props {
+    changeSorting: (sort: SortBy) => void
+    deleteUser: (email: string) => void
     showColors: boolean,
     users: User[]
 }
 
-export function UsersList ({ showColors,users } : Props){
+export function UsersList ({ changeSorting, deleteUser, showColors, users } : Props){
     return (
         <table width='100%'>
             <thead>
                 <tr>
                     <th>Photo</th>
-                    <th>Name</th>
-                    <th>Last Name</th>
-                    <th>Country</th>
+                    <th className='pointer' onClick={ () => changeSorting(SortBy.NAME)}>Name</th>
+                    <th className='pointer' onClick={ () => changeSorting(SortBy.LAST)}>Last Name</th>
+                    <th className='pointer' onClick={ () => changeSorting(SortBy.COUNTRY)}>Country</th>
                     <th>Accions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody className={ showColors ? 'table--showColors' : ''} >
                 {
-                    users.map( (user, index) => {
-                        const backgroundColor = index % 2 === 0 ? '#333' : '#555';
-                        const color = showColors ? backgroundColor : 'transparent'
+                    users.map( (user) => {
                         return (
-                            <tr key ={index} style = {{ backgroundColor: color}}>
+                            <tr key ={ user.email}>
                             <td>
                                 <img src={user.picture.thumbnail} />
                             </td>
@@ -33,7 +33,9 @@ export function UsersList ({ showColors,users } : Props){
                             <td>{user.name.last}</td>
                             <td>{user.location.country}</td>
                             <td>
-                                <button>Delete</button>
+                                <button onClick={()=>{
+                                  deleteUser(user.email)  
+                                }}>Delete</button>
                             </td>
                         </tr>
                         ) 
